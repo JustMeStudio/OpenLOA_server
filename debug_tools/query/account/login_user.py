@@ -5,8 +5,8 @@ LOGIN_URL = f"{BASE_URL}/account/login"
 
 # 登录凭证（管理员账号）
 login_data = {
-    "account": "fdshiwoa@gmail.com",
-    "password": "fd941109FD"
+    "account": "example@163.com",
+    "password": "your-password"
 }
 
 try:

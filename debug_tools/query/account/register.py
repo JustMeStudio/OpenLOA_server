@@ -7,9 +7,9 @@ ADMIN_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiM2Y0Y2I0NDQt
 
 # 注册数据
 payload = {
-    "email": "fdshiwoa@163.com",
-    "password": "fd941109FD",
-    "confirm_password": "fd941109FD",
+    "email": "example@163.com",
+    "password": "your-password",
+    "confirm_password": "your-password",
     "user_role": "admin"
 }
 
