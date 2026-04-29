@@ -1,0 +1,31 @@
+# 忽略项目文件和临时文件
+temp
+storage
+projects
+
+# 忽略 ChromaDB 向量数据库（Lucy AI客服知识库）
+database/chromadb_cs/
+
+# 忽略 Python 虚拟环境
+venv/
+ENV/
+env/
+
+# 编译文件
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 忽略本地环境配置文件（通常包含数据库密码等敏感信息）
+#.env
+
+# 忽略包含 API 密钥的配置文件
+configs/models.yaml
+configs/tools.yaml
+
+# 忽略 VS Code 配置
+.vscode/
+
+# 忽略其他系统文件
+.DS_Store

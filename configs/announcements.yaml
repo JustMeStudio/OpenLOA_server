@@ -1,0 +1,51 @@
+#------------------------------------------------------
+# 公告信息配置
+# 必填字段：id, type, title, message, startTime
+# 其中 title 和 message 支持中英文（zh, en）
+# 可选字段：endTime, priority, url, status, createdAt, updatedAt
+#------------------------------------------------------
+
+announcements:
+  - id: "1"
+    type: "maintenance"
+    title:
+      zh: "系统维护通知"
+      en: "System Maintenance Notice"
+    message:
+      zh: "2026年4月15日 02:00-06:00 进行系统维护，期间服务暂时不可用"
+      en: "System maintenance will be performed on April 15, 2026, 02:00-06:00, services will be unavailable during this period"
+    startTime: "2026-04-15 02:00"
+    endTime: "2026-04-15 06:00"
+    priority: 1
+    status: "active"
+    createdAt: "2026-04-10 10:00:00"
+    updatedAt: "2026-04-10 10:00:00"
+
+  - id: "2"
+    type: "feature"
+    title:
+      zh: "新功能上线"
+      en: "New Feature Release"
+    message:
+      zh: "推出全新的AI能力，提升您的工作效率"
+      en: "Introducing new AI capabilities to boost your work efficiency"
+    startTime: "2026-04-12 10:00"
+    priority: 5
+    url: "https://example.com/feature"
+    status: "active"
+    createdAt: "2026-04-10 11:00:00"
+    updatedAt: "2026-04-10 11:00:00"
+
+  - id: "3"
+    type: "important"
+    title:
+      zh: "重要安全提示"
+      en: "Important Security Notice"
+    message:
+      zh: "请定期更换密码以保护账户安全"
+      en: "Please change your password regularly to protect your account security"
+    startTime: "2026-04-08 00:00"
+    priority: 2
+    status: "active"
+    createdAt: "2026-04-08 08:00:00"
+    updatedAt: "2026-04-08 08:00:00"

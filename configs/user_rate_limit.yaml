@@ -1,0 +1,79 @@
+# 用户级限流配置
+# 对于已认证请求的保护（防止单个用户异常使用）
+
+user_rate_limits:
+  # ========== 高消耗接口（AI对话） ==========
+  agent_chat:
+    enabled: true
+    description: "AI对话接口 - 防止大量自动化请求"
+    endpoints:
+      - /agent/chat
+    limit: 5                # 每个用户每分钟最多5个并发对话请求
+    window_seconds: 60      # 时间窗口 = 1分钟
+    note: "建议配合并发控制(Semaphore)使用，这里限制请求频率"
+
+  # ========== 中等消耗接口（充值/消耗） ==========
+  billing_operations:
+    enabled: true
+    description: "充值、消耗等付费操作"
+    endpoints:
+      - /billing/recharge
+      - /billing/consume
+    limit: 10               # 每个用户每分钟最多10次操作
+    window_seconds: 60
+
+  # ========== 低消耗接口（查询、停止等） ==========
+  query_operations:
+    enabled: true
+    description: "查询、停止生成等轻量操作"
+    endpoints:
+      - /agent/stop_generation
+      - /agent/query_conversations
+      - /agent/query_messages_in_conversation
+      - /agent/query_agent_info
+      - /billing/balance
+      - /billing/transactions
+      - /billing/packages
+      - /billing/calculate_custom_price
+    limit: 50               # 每个用户每分钟最多50次查询
+    window_seconds: 60
+
+  # ========== 用户信息修改 ==========
+  user_profile:
+    enabled: true
+    description: "修改用户信息、密码等"
+    endpoints:
+      - /account/update_password
+      - /account/update_user_info
+      - /agent/create_edit_agent
+    limit: 20
+    window_seconds: 60
+
+  # ========== Agent推荐接口 ==========
+  agent_recommendation:
+    enabled: true
+    description: "推荐合适的Agent"
+    endpoints:
+      - /information/recommend_agents
+    limit: 5
+    window_seconds: 600
+
+  # ========== 默认规则（其他认证接口） ==========
+  default:
+    enabled: true
+    description: "默认用户级限流规则（兜底）"
+    limit: 120
+    window_seconds: 60      # 1分钟120次
+
+# 是否开启用户级限流（全局开关）
+enabled: true
+
+# 高级配置
+advanced:
+  # 是否为premium用户(VIP)提供更高的限额
+  # 示例：如果用户role='premium'，multiplication_factor=2.0（即限额翻倍）
+  vip_multiplier: 2.0
+  vip_role: "premium"
+  
+  # 是否在限流时记录到数据库（便于分析）
+  log_violations: true

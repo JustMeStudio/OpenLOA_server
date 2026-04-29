@@ -1,0 +1,97 @@
+# ==========================================
+# 邮件服务配置（发送 + 白名单）
+# ==========================================
+
+# ---- 发送服务 ----
+
+# 邮件服务提供商: "aliyun" 或 "mock"
+# mock 模式不发送实际邮件，直接将固定验证码写入 Redis，供开发测试使用
+provider: "aliyun"
+
+# Mock 配置（仅当 provider: mock 时生效）
+mock:
+  fixed_code: "123456"
+
+# 阿里云 SMTP 配置
+aliyun:
+  smtp_server: "smtpdm.aliyun.com"
+  smtp_port: 465
+  sender_email: "noreply@mails.ai579.com"
+  # SMTP 密码从环境变量读取: ALIYUN_SMTP_PASSWORD
+  from_name: "Ai579"
+
+# ---- 邮箱白名单 ----
+# 只有白名单内的邮箱域名才允许注册，防止垃圾邮箱和一次性邮箱注册
+
+whitelist_enabled: true
+description: "邮箱域名白名单 - 只允许常用个人邮箱注册"
+
+# 白名单域名列表（小写）
+whitelist:
+  # ========== 中国主流邮箱 ==========
+  china:
+    qq.com: "QQ邮箱"
+    163.com: "网易邮箱"
+    126.com: "网易邮箱126"
+    139.com: "中国移动云邮箱"
+    sina.com: "新浪邮箱"
+    sohu.com: "搜狐邮箱"
+    yeah.net: "网易Yeah邮箱"
+    vip.sina.com: "新浪VIP邮箱"
+    vip.163.com: "网易VIP邮箱"
+    189.cn: "中国电信189邮箱"
+    aliyun.com: "阿里云邮箱"
+    foxmail.com: "腾讯企业邮箱"
+
+  # ========== 国外主流邮箱 ==========
+  international:
+    gmail.com: "Google Gmail"
+    outlook.com: "Microsoft Outlook"
+    hotmail.com: "Microsoft Hotmail"
+    yahoo.com: "Yahoo Mail"
+    aol.com: "AOL Mail"
+    mail.com: "Mail.com"
+    protonmail.com: "ProtonMail"
+    protonmail.ch: "ProtonMail (CH)"
+    tutanota.com: "Tutanota"
+    icloud.com: "Apple iCloud"
+    me.com: "Apple Me"
+    mac.com: "Apple Mac"
+
+  # ========== 其他国家特定邮箱 ==========
+  other_countries:
+    yandex.com: "俄罗斯Yandex"
+    yandex.ru: "俄罗斯Yandex.ru"
+    mail.ru: "俄罗斯Mail.ru"
+    rambler.ru: "俄罗斯Rambler"
+    web.de: "德国Web.de"
+    gmx.com: "德国GMX"
+    gmx.de: "德国GMX.de"
+    freenet.de: "德国Freenet"
+    laposte.net: "法国La Poste"
+    wanadoo.fr: "法国Wanadoo"
+    libero.it: "意大利Libero"
+    virgilio.it: "意大利Virgilio"
+    dodo.com.au: "澳大利亚Dodo"
+    bigpond.com: "澳大利亚BigPond"
+    telus.net: "加拿大Telus"
+    sympatico.ca: "加拿大Sympatico"
+    naver.com: "韩国Naver"
+    daum.net: "韩国Daum"
+    kakao.com: "韩国Kakao"
+    yahoo.co.jp: "日本Yahoo"
+    docomo.ne.jp: "日本DoCoMo"
+    softbank.ne.jp: "日本SoftBank"
+    so-net.ne.jp: "日本So-net"
+
+# 错误信息
+whitelist_error_message: "only personal email addresses are allowed for registration"
+
+# 黑名单（优先级高于白名单，即使在白名单中也会被拒绝）
+blacklist:
+  domains:
+    # 示例：已知的滥用账户所使用的具体邮箱
+    # abuse.example.com: "已知的滥用账户"
+  individual_emails:
+    # 示例：具体的黑名单邮箱地址
+    # spam@example.com: "已知的刷屏账户"

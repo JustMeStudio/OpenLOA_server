@@ -1,0 +1,16 @@
+# agent profiles configuration
+Lucy:
+  avatar: "https://cdn.ai579.com/web/avatar/Lucy.jpg"
+  zh:
+    type: "AI客服"
+    nick_name: "沐希"
+    description: "本网站的客服小姐姐，随时为你解答关于网站使用的任何问题"
+    tags_zh: []
+    starter_prompts_zh: ["我要汇报一些问题", "我有一些疑问需要解答", "我要吐槽这个网站"]
+  en:
+    type: "AI Customer Service"
+    nick_name: "Lucy"
+    description: "The customer service assistant of this website, ready to answer any questions about using the website"
+    tags_en: []
+    starter_prompts_en: ["I want to report some issues", "I have some questions that need answers", "I want to give feedback about this website"  ]
+  is_active: true

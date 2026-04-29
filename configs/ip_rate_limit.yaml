@@ -1,0 +1,55 @@
+# IP级限流配置
+# 对于未认证请求的保护（防止暴力破解和恶意探测）
+
+ip_rate_limits:
+  # ========== 高敏感接口（验证码相关） ==========
+  auth_endpoints:
+    enabled: true
+    description: "验证码类接口限流"
+    endpoints:    
+      - /account/send_code    
+    limit: 5              # 每个时间窗口的请求限额
+    window_seconds: 86400    # 时间窗口（秒）= 1天5次
+
+  # ========== 中敏感接口（注册，登录等）==========
+  registration:
+    enabled: true
+    description: "注册接口 - 防止垃圾账户"
+    endpoints:
+      - /account/register
+      - /account/login
+      - /security/refresh_token
+    limit: 5
+    window_seconds: 3600  # 1小时5次（更严格）
+
+  # ========== 低敏感接口（读取公开数据） ==========
+  read_endpoints:
+    enabled: true
+    description: "公开信息读取接口"
+    endpoints:
+      - /billing/packages
+      - /billing/calculate_custom_price
+      - /agent/query_agent_info
+    limit: 20
+    window_seconds: 60    # 1分钟20次
+
+  # ========== 默认规则（其他未明确指定的接口） ==========
+  default:
+    enabled: true
+    description: "默认限流规则（兜底）"
+    limit: 120
+    window_seconds: 60    # 1分钟120次
+
+
+# 是否开启IP限流（全局开关）
+enabled: true
+
+# 是否信任代理的X-Forwarded-For头（用于反向代理环境）
+trust_proxy: true
+
+# 排除名单（不进行限流的IP）
+# 例如内部服务、本地开发机等
+whitelist_ips: []
+  # - "127.0.0.1"
+  # - "::1"
+  # - "10.0.0.0/8"

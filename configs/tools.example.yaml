@@ -1,0 +1,21 @@
+#------------------------------------------------------
+# manage api_key of local defined tools
+#------------------------------------------------------
+
+#-----------customer service agent---------------------
+Lucy_embedding:
+  base_url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+  model: "text-embedding-v4"
+  api_key: "your-api-key-here"
+
+#------------public share-------------------------------------
+translator:
+  base_url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+  model: "qwen3.5-flash"
+  api_key: "your-api-key-here"
+
+image_understander:
+  base_url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+  model: "qwen3.5-flash"
+  api_key: "your-api-key-here"
+#------------------------------------------------------

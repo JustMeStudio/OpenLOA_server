@@ -1,0 +1,31 @@
+# ==========================================
+# CDN 远程鉴权服务配置
+# ==========================================
+
+# QPS 限流规则
+rate_limit:
+  enabled: false
+  window_seconds: 180              # 统计时间窗口（秒）
+  
+  # 不同资源类型的差异化限制QPS
+  by_resource_type:
+    video: 5                       # 视频资源
+    image: 20                      # 图片资源
+    file: 20                       # 文件资源
+    default: 60                    # 其他资源
+
+# 安全配置
+security:
+  # 时间戳验证的容差时间（秒），防止重放攻击
+  timestamp_tolerance: 300         # 5分钟
+  
+  # 内部请求标识（跳过所有鉴权）
+  # 后端服务在请求头中携带 X-Source-ID: internal 可直接跳过所有鉴权
+  internal_source_id: internal
+
+# URL路径白名单配置
+# 只允许以这些路径开头的资源通过CDN鉴权
+allowed_paths:
+  - /user                          # 用户相关资源
+  - /web                           # 网页资源
+  # 添加更多允许的路径，每个路径占一行

@@ -1,0 +1,7 @@
+# Agent全局限流配置文件
+
+agents:
+  # Lucy:
+  #   max_concurrent: 10
+  #   enabled: true
+  #   description: "客服助手Agent"
