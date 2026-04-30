@@ -4,7 +4,8 @@ storage
 projects
 
 # 忽略 ChromaDB 向量数据库（Lucy AI客服知识库）
-database/chromadb_cs/
+database/
+
 
 # 忽略 Python 虚拟环境
 venv/

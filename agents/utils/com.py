@@ -152,23 +152,34 @@ async def chat(model, system_prompt: str = "", messages=[],
         estimated_prompt_tokens = _estimate_tokens_for_messages(full_messages)
 
         try:
-            response = await client.chat.completions.create(
-                model=model["model"],
-                messages=full_messages,
-                **({"tools": tools} if tools else {}),
-                stream=True,
-                stream_options={"include_usage": True},
-                temperature=1.0,
-                extra_body={
-                    "enable_thinking": enable_thinking,
-                    "enable_search": enable_search,
-                    # 可选：配置搜索策略
-                    "search_options": {
-                        "forced_search": forced_search,
-                        "search_strategy": search_strategy  # 或 "max", "agent", "agent_max"
-                    }
+            # 构建请求参数
+            request_kwargs = {
+                "model": model["model"],
+                "messages": full_messages,
+                "stream": True,
+                "stream_options": {"include_usage": True},
+                "temperature": 1.0,
+                # "extra_body": {
+                #     "enable_thinking": enable_thinking,
+                #     "enable_search": enable_search,
+                #     # 可选：配置搜索策略
+                #     "search_options": {
+                #         "forced_search": forced_search,
+                #         "search_strategy": search_strategy  # 或 "max", "agent", "agent_max"
+                #     }
+                # }
+                "extra_body":{
+                    "chat_template_kwargs": {"enable_thinking": enable_thinking}  #非思考
                 }
-            )
+            }
+            
+            # 如果有工具，显式设置 tool_choice 参数（兼容本地 Qwen 部署）
+            if tools:
+                request_kwargs["tools"] = tools
+                request_kwargs["tool_choice"] = "auto"
+
+            response = await client.chat.completions.create(**request_kwargs)
+
         except Exception as e:
             raise
         collected_content = ""
@@ -261,6 +272,7 @@ async def chat(model, system_prompt: str = "", messages=[],
             break
         
         if tool_calls_map:
+            print(tool_calls_map)
             formatted_tool_calls = [v for k, v in sorted(tool_calls_map.items())]
             # 1. 记录 assistant 的工具请求到上下文
             assistant_msg = {

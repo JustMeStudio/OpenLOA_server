@@ -115,29 +115,112 @@ def send_email_task(target_email: str, code: str, purpose: str = "register"):
 
     # 构建邮件文案
     if purpose == "reset":
-        subject = "您的找回密码验证码"
+        subject = "账户安全验证"
         message_html = f"""
+    <!DOCTYPE html>
     <html>
+        <head>
+            <meta charset="utf-8">
+            <style>
+                body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }}
+                .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                .header {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }}
+                .header h1 {{ margin: 0; font-size: 28px; font-weight: 600; }}
+                .content {{ background: #f8f9fa; padding: 40px 30px; text-align: center; }}
+                .code-box {{ 
+                    background: white; 
+                    border: 2px solid #667eea; 
+                    border-radius: 8px; 
+                    padding: 30px; 
+                    margin: 30px 0; 
+                    display: inline-block;
+                }}
+                .verification-code {{ 
+                    font-size: 48px; 
+                    font-weight: 700; 
+                    color: #667eea; 
+                    letter-spacing: 8px;
+                    font-family: 'Courier New', monospace;
+                }}
+                .footer {{ background: #f0f2f5; padding: 20px; font-size: 12px; color: #666; text-align: center; border-radius: 0 0 8px 8px; line-height: 1.6; }}
+                .warning {{ color: #666; font-size: 13px; margin-top: 20px; }}
+                p {{ margin: 15px 0; line-height: 1.6; color: #333; }}
+            </style>
+        </head>
         <body>
-            <h2 style="color: #333;">Ai579 密码重置</h2>
-            <p>我们收到了您的密码重置请求，您的验证码为：</p>
-            <p><b style="font-size: 24px; color: #e74c3c;">{code}</b></p>
-            <p>该验证码在 5 分钟内有效，请勿泄露给他人。</p>
-            <hr>
-            <p style="font-size: 12px; color: #999;">如果您没有发起此请求，请忽略此邮件，您的账户密码不会发生任何变化。</p>
+            <div class="container">
+                <div class="header">
+                    <h1>🔐 账户安全验证</h1>
+                </div>
+                <div class="content">
+                    <p>您的账户密码重置请求已被接收。</p>
+                    <p style="font-size: 14px; color: #666;">请使用下方验证码完成重置流程：</p>
+                    <div class="code-box">
+                        <div class="verification-code">{code}</div>
+                    </div>
+                    <p class="warning">⏱️ 此验证码 5 分钟内有效</p>
+                    <p class="warning">⚠️ 请勿将验证码分享给任何人</p>
+                    <p style="font-size: 12px; color: #999; margin-top: 30px;">如果此操作不是由您发起，请立即忽略此邮件并确保账户安全。</p>
+                </div>
+                <div class="footer">
+                    <p>© 2026 All Rights Reserved. | This is an automated message, please do not reply.</p>
+                </div>
+            </div>
         </body>
     </html>
     """
     else:
-        subject = "您的注册验证码"
+        subject = "验证您的账户"
         message_html = f"""
+    <!DOCTYPE html>
     <html>
+        <head>
+            <meta charset="utf-8">
+            <style>
+                body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }}
+                .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                .header {{ background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }}
+                .header h1 {{ margin: 0; font-size: 28px; font-weight: 600; }}
+                .content {{ background: #f8f9fa; padding: 40px 30px; text-align: center; }}
+                .code-box {{ 
+                    background: white; 
+                    border: 2px solid #00d4ff; 
+                    border-radius: 8px; 
+                    padding: 30px; 
+                    margin: 30px 0; 
+                    display: inline-block;
+                }}
+                .verification-code {{ 
+                    font-size: 48px; 
+                    font-weight: 700; 
+                    color: #0099ff; 
+                    letter-spacing: 8px;
+                    font-family: 'Courier New', monospace;
+                }}
+                .footer {{ background: #f0f2f5; padding: 20px; font-size: 12px; color: #666; text-align: center; border-radius: 0 0 8px 8px; line-height: 1.6; }}
+                .tips {{ color: #666; font-size: 13px; margin-top: 20px; }}
+                p {{ margin: 15px 0; line-height: 1.6; color: #333; }}
+            </style>
+        </head>
         <body>
-            <h2 style="color: #333;">欢迎注册Ai579！</h2>
-            <p>您的验证码为：<b style="font-size: 24px; color: #007bff;">{code}</b></p>
-            <p>该验证码在 5 分钟内有效，请勿泄露给他人。</p>
-            <hr>
-            <p style="font-size: 12px; color: #999;">如果这不是您的操作，请忽略此邮件。</p>
+            <div class="container">
+                <div class="header">
+                    <h1>✅ 账户激活</h1>
+                </div>
+                <div class="content">
+                    <p>欢迎加入我们的平台！</p>
+                    <p style="font-size: 14px; color: #666;">请使用下方验证码完成账户激活：</p>
+                    <div class="code-box">
+                        <div class="verification-code">{code}</div>
+                    </div>
+                    <p class="tips">⏱️ 此验证码有效期为 5 分钟</p>
+                    <p class="tips">🔒 此验证码仅供您本人使用</p>
+                    <p style="font-size: 12px; color: #999; margin-top: 30px;">如果这不是您的注册操作，可以安全地忽略此邮件。</p>
+                </div>
+                <div class="footer">
+                    <p>© 2026 All Rights Reserved. | This is an automated message, please do not reply.</p>
+                </div>
+            </div>
         </body>
     </html>
     """
@@ -152,7 +235,7 @@ def _send_email_aliyun(target_email: str, subject: str, message_html: str):
         smtp_server = aliyun_cfg.get("smtp_server", "smtpdm.aliyun.com")
         smtp_port = aliyun_cfg.get("smtp_port", 465)
         sender_email = aliyun_cfg.get("sender_email", "")
-        from_name = aliyun_cfg.get("from_name", "Ai579")
+        from_name = aliyun_cfg.get("from_name", "OpenLOA")
         smtp_password = os.getenv("ALIYUN_SMTP_PASSWORD", "")
 
         msg = MIMEMultipart()

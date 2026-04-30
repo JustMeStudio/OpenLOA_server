@@ -94,7 +94,7 @@ async def Lucy(messages, conversation_id, user_id):
         tools_names = "\n".join(tools_registry.keys())
         print(f"🛠️  Tools I've got:\n{tools_names}")
         print("🚀 I'm ready!")
-        async for msg_dict in chat(model, system_prompt, messages, tools, tools_registry, conversation_id, user_id):
+        async for msg_dict in chat(model, system_prompt, messages, tools, tools_registry, conversation_id, user_id, enable_thinking=False):
             yield msg_dict
     except Exception as e:
         print(f"❌ Lucy：对话过程中发生错误: {str(e)}")

@@ -10,8 +10,8 @@ import sys
 
 # ===== 配置区 =====
 BASE_URL = "http://localhost:9000"
-ADMIN_ACCOUNT = "your_admin@example.com"
-ADMIN_PASSWORD = "your_password"
+ADMIN_ACCOUNT = "openloa@openloa.com"
+ADMIN_PASSWORD = "openloa123"
 
 PAGE_LIMIT  = 20   # 每页条数
 PAGE_OFFSET = 0    # 从第几条开始（0 = 第一条）

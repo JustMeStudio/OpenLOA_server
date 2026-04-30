@@ -6,7 +6,7 @@
 
 # 邮件服务提供商: "aliyun" 或 "mock"
 # mock 模式不发送实际邮件，直接将固定验证码写入 Redis，供开发测试使用
-provider: "aliyun"
+provider: "mock"
 
 # Mock 配置（仅当 provider: mock 时生效）
 mock:
@@ -16,9 +16,9 @@ mock:
 aliyun:
   smtp_server: "smtpdm.aliyun.com"
   smtp_port: 465
-  sender_email: "noreply@mails.ai579.com"
+  sender_email: "noreply@mail.your-domain.com"
   # SMTP 密码从环境变量读取: ALIYUN_SMTP_PASSWORD
-  from_name: "Ai579"
+  from_name: "example"
 
 # ---- 邮箱白名单 ----
 # 只有白名单内的邮箱域名才允许注册，防止垃圾邮箱和一次性邮箱注册

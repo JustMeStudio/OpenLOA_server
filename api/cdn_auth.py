@@ -589,7 +589,7 @@ async def verify_auth(
         # 1. 提取URL路径（从完整URL中提取路径部分）
         url = None
         if ali_origin_real_url:
-            # ali-origin-real-url 格式: https://cdn.ai579.com/web/avatar/Lucy.jpg
+            # ali-origin-real-url 格式: https://cdn.OpenLOA.com/web/avatar/Lucy.jpg
             # 需要提取: /web/avatar/Lucy.jpg
             from urllib.parse import urlparse
             parsed = urlparse(ali_origin_real_url)
