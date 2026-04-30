@@ -4,12 +4,6 @@
 # 服务器
 # nohup uvicorn main:app --host 0.0.0.0 --port 9000 --workers 3 &
 
-# frp windows
-# frp\frp_0.68.1_windows_amd64\frpc.exe -c frp\frp_0.68.1_windows_amd64\frpc.toml
-# frp linux
-# chmod +x frp\frp_0.68.1_linux_amd64\frpc
-# frp\frp_0.68.1_linux_amd64\frpc -c frp\frp_0.68.1_linux_amd64\frpc.toml
-
 import os
 import jwt
 from dotenv import load_dotenv
