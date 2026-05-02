@@ -3,15 +3,15 @@ import requests
 # 配置
 BASE_URL = "http://127.0.0.1:8000"
 UPDATE_PWD_URL = f"{BASE_URL}/account/update_password"
-ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiM2Y0Y2I0NDQtYWU0OS00YjhkLTg4NDEtNGZmYmFjNGQyYWY2IiwiZXhwIjoxNzcwMjIwODkzfQ.65e9TrLbzOWUXCCiQKzYU9ETz02YMbnJgmHfK_IqrHQ"
+ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleGFtcGxlIjoiZXhhbXBsZSJ9.example"
 
 
 # 修改密码的数据负载
 payload = {
-    "login_name": "liuyalan",
-    "password": "liuyalan1234",       # 必须是数据库中当前的正确密码
-    "new_password": "liuyalan5678",  # 符合复杂度要求的新密码
-    "confirm_new_password": "liuyalan5678"
+    "login_name": "",  # 替换为实际的登录名
+    "password": "",       # 必须是数据库中当前的正确密码
+    "new_password": "",  # 符合复杂度要求的新密码
+    "confirm_new_password": ""  # 确认新密码，必须与 new_password 一致
 }
 
 # 设置 Header

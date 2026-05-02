@@ -22,8 +22,8 @@ import os
 
 # ===== 配置区 =====
 BASE_URL = "http://localhost:9000"
-ADMIN_ACCOUNT = "openloa@openloa.com"   # 管理员账号
-ADMIN_PASSWORD = "openloa123"            # 管理员密码
+ADMIN_ACCOUNT = "admin@example.com"   # 管理员账号
+ADMIN_PASSWORD = "<your-admin-password-here>"            # 管理员密码
 
 XLSX_PATH = r"C:\Users\Tenson\Desktop\代码仓库\OpenLOA_server\debug_tools\query\admin\knowledge_data.xlsx"          # xlsx 文件路径（相对或绝对路径）
 SHEET_NAME = 0                             # 读取第几个 sheet（0 = 第一个），也可以填 sheet 名称

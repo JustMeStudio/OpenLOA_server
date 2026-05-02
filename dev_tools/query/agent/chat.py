@@ -8,7 +8,7 @@ async def chat_with_agent_example():
     
     # 模拟认证 Token (对应 Depends(get_current_user))
     headers = {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiN2JlNDdkMWEtNjA3OS00ODM0LWE2N2YtMzY5YTI0NDFkNjc3IiwiZXhwIjoxNzczNjc1OTk0fQ.TrL1ACq-snnGkkCbYGTtrV04YnZk3dCAD3XIE9fetyE",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleGFtcGxlIjoiZXhhbXBsZSJ9.example",
         "Content-Type": "application/json"
     }
     

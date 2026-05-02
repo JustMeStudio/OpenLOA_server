@@ -4,7 +4,7 @@ import requests
 BASE_URL = "http://127.0.0.1:8000"
 UPDATE_INFO_URL = f"{BASE_URL}/account/update_user_info"
 # 这里填入你通过 /user_login 接口获取到的 access_token
-USER_ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiM2Y0Y2I0NDQtYWU0OS00YjhkLTg4NDEtNGZmYmFjNGQyYWY2IiwiZXhwIjoxNzcwMjIxOTE5fQ.QEqanYB51LIM20d1P_VpNNI6eQhqZdutUo90pYUJ11I"
+USER_ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleGFtcGxlIjoiZXhhbXBsZSJ9.example"
 
 # 设置请求头
 headers = {
@@ -14,9 +14,9 @@ headers = {
 
 # 准备要修改的数据（login_name 必须与 Token 对应的用户一致）
 payload = {
-    "login_name": "fanding",
-    "user_name": "dean",
-    "phone_number": "18810703037",
+    "login_name": "",
+    "user_name": "",
+    "phone_number": "",
     "gender": "male"
 }
 

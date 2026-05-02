@@ -5,7 +5,7 @@ BASE_URL = "http://127.0.0.1:9000"
 MANAGE_URL = f"{BASE_URL}/account/manage_permissions"
 
 # 必须使用【管理员账号】登录后获取的 access_token
-ADMIN_ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMmI2Nzg4ZDktOGJjZS00NWM1LThlZTQtYTkyMjk3MGM0Y2U2IiwiZXhwIjoxNzcwMjIyNDg0fQ.6fYfCV4ntKVSixMb0v0nLdKCVrfVuXiDcEdQmIFI9_s"
+ADMIN_ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleGFtcGxlIjoiZXhhbXBsZSJ9.example"
 
 headers = {
     "Authorization": f"Bearer {ADMIN_ACCESS_TOKEN}",
@@ -20,7 +20,7 @@ payload_upgrade = {
 
 # 场景 B：禁用（封禁）某个违规账号
 payload_disable = {
-    "login_name": "fanding",
+    "login_name": "example",
     "new_enabled": False
 }
 

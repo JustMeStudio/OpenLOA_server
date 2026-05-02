@@ -15,8 +15,8 @@ import sys
 
 # ===== 配置区 =====
 BASE_URL = "http://localhost:9000"
-ADMIN_ACCOUNT = "your_admin@example.com"
-ADMIN_PASSWORD = "your_password"
+ADMIN_ACCOUNT = "admin@example.com"
+ADMIN_PASSWORD = "<your-admin-password-here>"
 
 # 填入要删除的语料 ID（从 list_knowledge.py 输出中复制）
 DELETE_IDS = [
