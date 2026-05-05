@@ -14,3 +14,19 @@ Lucy:
     tags_en: []
     starter_prompts_en: ["I have some questions that need answers", "I want to give feedback about this website", "I want to report some issues"]
   is_active: true
+
+Amy:
+  avatar: "https://img.icons8.com/fluency/96/airport.png"
+  zh:
+    type: "机场信息助手"
+    nick_name: "Amy"
+    description: "我是您的机场信息助手，可为您实时查询航班状态、机场设施、航线票价、停车交通等一切机场相关信息"
+    tags_zh: []
+    starter_prompts_zh: ["查询北京首都机场T3航站楼的设施", "搜索明天北京到上海的航班", "CA0103航班现在什么状态？"]
+  en:
+    type: "Airport Information Assistant"
+    nick_name: "Amy"
+    description: "I am your airport information assistant. Ask me anything about flight status, airport facilities, routes, fares, parking, and ground transport."
+    tags_en: []
+    starter_prompts_en: ["Check facilities at PEK Terminal T3", "Find flights from Beijing to Shanghai tomorrow", "What is the status of flight CA0103?"]
+  is_active: true
