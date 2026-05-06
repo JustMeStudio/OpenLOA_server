@@ -19,7 +19,7 @@ __pycache__/
 *.pyd
 
 # 忽略本地环境配置文件（通常包含数据库密码等敏感信息）
-#.env
+.env
 
 # 忽略包含 API 密钥的配置文件
 configs/models.yaml

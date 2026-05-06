@@ -111,6 +111,80 @@ async def html_to_pdf(
         return {"result": "error", "message": str(e)}
 
 
+async def html_content_to_pdf(
+    html_content: str,
+    file_name_prefix: str = "document",
+    pdf_config: dict = None,
+) -> dict:
+    """
+    将 HTML 字符串转换为 PDF 并上传 OSS。
+
+    Args:
+        html_content: 完整 HTML 文本
+        file_name_prefix: OSS 文件名前缀
+        pdf_config: PDF 生成配置（与 html_to_pdf 一致）
+
+    Returns:
+        {
+            "result": "success",
+            "file_attachment": "PDF的网络URL"
+        }
+        或
+        {
+            "result": "error",
+            "message": "错误描述"
+        }
+    """
+    if not (html_content or "").strip():
+        return {"result": "error", "message": "html_content 不能为空"}
+
+    if pdf_config is None:
+        pdf_config = {}
+
+    default_config = {
+        "viewport_width": 1280,
+        "viewport_height": 800,
+        "device_scale_factor": 2,
+        "print_background": True,
+        "margin": {"top": "0", "right": "0", "bottom": "0", "left": "0"},
+        "wait_until": "load",
+        "extra_wait_ms": 1000,
+    }
+    final_config = {**default_config, **pdf_config}
+
+    loop = asyncio.get_event_loop()
+    try:
+        pdf_path = await loop.run_in_executor(
+            _pdf_executor,
+            _html_content_to_pdf_sync,
+            html_content,
+            final_config,
+        )
+
+        if isinstance(pdf_path, dict) and pdf_path.get("result") == "error":
+            return pdf_path
+
+        safe_prefix = re.sub(r"[^a-zA-Z0-9_-]", "_", file_name_prefix or "document")
+        file_name = f"{safe_prefix}_{uuid.uuid4().hex[:8]}.pdf"
+        oss_key = f"user/task_files/{PROJECT_NAME.get()}/{file_name}"
+        updated_pdf_url = await upload_file_to_oss(pdf_path, oss_key)
+
+        try:
+            if os.path.exists(pdf_path):
+                os.remove(pdf_path)
+        except Exception as e:
+            print(f"删除临时PDF文件失败: {str(e)}")
+
+        return {
+            "result": "success",
+            "pdf_save_path": updated_pdf_url,
+            "file_attachment": updated_pdf_url,
+        }
+    except Exception as e:
+        print(f"HTML字符串转PDF失败: {str(e)}")
+        return {"result": "error", "message": str(e)}
+
+
 def _html_to_pdf_sync(url: str, config: dict) -> dict | str:
     """
     同步版本的 HTML→PDF 转换函数
@@ -231,6 +305,95 @@ def _html_to_pdf_sync(url: str, config: dict) -> dict | str:
     
     except Exception as e:
         print(f"PDF转换发生意外错误: {str(e)}")
+        return {"result": "error", "message": f"PDF转换失败: {str(e)}"}
+
+
+def _html_content_to_pdf_sync(html_content: str, config: dict) -> dict | str:
+    """
+    同步版本的 HTML 字符串 -> PDF 转换函数（在线程池中运行）。
+    """
+    temp_dir = os.path.join(PROJECT_PATH.get(), "temp")
+    os.makedirs(temp_dir, exist_ok=True)
+    unique_id = str(uuid.uuid4())
+    output_pdf_path = os.path.join(temp_dir, f"render_{unique_id}.pdf")
+
+    try:
+        with sync_playwright() as p:
+            try:
+                browser = p.chromium.launch(headless=True)
+            except Exception as e:
+                print(f"Chromium 启动失败: {str(e)}，正在尝试自动安装...")
+                import subprocess
+                import sys as sys_module
+                try:
+                    subprocess.run(
+                        [sys_module.executable, "-m", "playwright", "install", "chromium"],
+                        check=True,
+                    )
+                    browser = p.chromium.launch(headless=True)
+                except Exception as install_error:
+                    return {
+                        "result": "error",
+                        "message": f"Chromium 安装或启动失败: {str(install_error)}",
+                    }
+
+            viewport_config = {
+                "width": config.get("viewport_width", 1280),
+                "height": config.get("viewport_height", 800),
+            }
+            with browser.new_context(
+                viewport=viewport_config,
+                device_scale_factor=config.get("device_scale_factor", 2),
+                accept_downloads=False,
+            ) as context:
+                with context.new_page() as page:
+                    page.emulate_media(media="screen")
+                    try:
+                        wait_until = config.get("wait_until", "load")
+                        page.set_content(html_content, wait_until=wait_until)
+                    except Exception as e:
+                        return {"result": "error", "message": f"设置HTML内容失败: {str(e)}"}
+
+                    try:
+                        page.wait_for_load_state("networkidle", timeout=30000)
+                        page.evaluate("() => document.fonts.ready")
+                        page.evaluate("""() => {
+                            const imgs = Array.from(document.images);
+                            return Promise.all(imgs.map(img => img.complete ? Promise.resolve() : new Promise(resolve => {
+                                img.onload = resolve;
+                                img.onerror = resolve;
+                            })));
+                        }""")
+                        extra_wait = config.get("extra_wait_ms", 1000)
+                        page.wait_for_timeout(extra_wait)
+                    except Exception as e:
+                        print(f"渲染优化出现非致命错误: {str(e)}")
+
+                    try:
+                        pdf_args = {
+                            "path": output_pdf_path,
+                            "print_background": config.get("print_background", True),
+                            "margin": config.get("margin", {"top": "0", "right": "0", "bottom": "0", "left": "0"}),
+                            "prefer_css_page_size": True,
+                            "display_header_footer": False,
+                        }
+
+                        if config.get("format"):
+                            pdf_args["format"] = config.get("format")
+                        else:
+                            if config.get("width"):
+                                pdf_args["width"] = config.get("width")
+                            if config.get("height"):
+                                pdf_args["height"] = config.get("height")
+                            if config.get("landscape") is not None:
+                                pdf_args["landscape"] = config.get("landscape")
+
+                        page.pdf(**pdf_args)
+                        return output_pdf_path
+                    except Exception as e:
+                        return {"result": "error", "message": f"PDF生成失败: {str(e)}"}
+    except Exception as e:
+        print(f"HTML字符串转PDF发生意外错误: {str(e)}")
         return {"result": "error", "message": f"PDF转换失败: {str(e)}"}
 
 

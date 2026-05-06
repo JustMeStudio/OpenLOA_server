@@ -3,6 +3,9 @@ import asyncio
 import sqlite3
 from dotenv import load_dotenv
 from agents.globals.context import add_pending_message
+from agents.utils.com import request_LLM_api
+from agents.utils.config import load_model_config
+from agents.utils.html_converter import html_content_to_pdf
 
 load_dotenv()
 
@@ -97,6 +100,104 @@ async def generate_chart(chart_type: str, title: str, data: dict) -> dict:
         }
 
 
+def _strip_code_fences(text: str) -> str:
+    cleaned = (text or "").strip()
+    if cleaned.startswith("```"):
+        lines = cleaned.splitlines()
+        if lines:
+            lines = lines[1:]
+        if lines and lines[-1].strip() == "```":
+            lines = lines[:-1]
+        cleaned = "\n".join(lines).strip()
+    return cleaned
+
+
+async def generate_pdf_report(report_material: str, report_requirement: str) -> dict:
+    """
+    生成 PDF 报告：先由 LLM 生成 HTML，再转为 PDF 并上传到 OSS。
+
+    参数:
+    - report_material: 报告素材（字符串）
+    - report_requirement: 报告要求（字符串）
+
+    返回:
+    {
+        "result": "success|failure",
+        "file_attachment": "pdf_url",
+        "message": "..."
+    }
+    """
+    if not (report_material or "").strip():
+        return {"result": "failure", "error": "report_material 不能为空"}
+    if not (report_requirement or "").strip():
+        return {"result": "failure", "error": "report_requirement 不能为空"}
+
+    model_config = load_model_config("Amy")
+    if not model_config:
+        return {"result": "failure", "error": "未找到 Amy 模型配置，无法生成报告"}
+
+    system_prompt = (
+        "你是专业报告写作助手。请严格根据用户提供素材与要求，输出一份可直接打印的完整 HTML 文档。"
+        "必须返回可渲染的 HTML，不要返回 Markdown，不要输出解释，不要使用代码块包裹。"
+    )
+    prompt = (
+        "请基于以下内容生成完整 HTML 报告。要求:\n"
+        "1) 输出必须是完整 HTML（包含 <html>、<head>、<body>）。\n"
+        "2) 使用清晰的标题层级、段落、表格/列表（按内容需要），排版适合 A4 打印。\n"
+        "3) 正文默认使用中文，风格专业、可交付。\n"
+        "4) 不要出现 ``` 等代码围栏。\n\n"
+        f"【报告素材】\n{report_material}\n\n"
+        f"【报告要求】\n{report_requirement}\n"
+    )
+
+    try:
+        html_content = await request_LLM_api(
+            model_config=model_config,
+            prompt=prompt,
+            system_prompt=system_prompt,
+            enable_search=False,
+            enable_thinking=False,
+        )
+        html_content = _strip_code_fences(html_content)
+        if not html_content:
+            return {"result": "failure", "error": "LLM 未返回有效内容，无法生成报告"}
+
+        if "<html" not in html_content.lower():
+            html_content = (
+                "<!doctype html><html><head><meta charset='utf-8'><title>报告</title></head><body>"
+                f"<pre style='white-space: pre-wrap; font-family: sans-serif;'>{html_content}</pre>"
+                "</body></html>"
+            )
+
+        convert_result = await html_content_to_pdf(
+            html_content=html_content,
+            file_name_prefix="report",
+            pdf_config={
+                "format": "A4",
+                "print_background": True,
+                "margin": {"top": "16mm", "right": "14mm", "bottom": "16mm", "left": "14mm"},
+                "wait_until": "networkidle",
+                "extra_wait_ms": 800,
+            },
+        )
+        if convert_result.get("result") != "success":
+            return {
+                "result": "failure",
+                "error": convert_result.get("message", "HTML 转 PDF 失败")
+            }
+
+        return {
+            "result": "success",
+            "file_attachment": convert_result.get("file_attachment"),
+            "message": "PDF 报告已生成并上传。"
+        }
+    except Exception as e:
+        return {
+            "result": "failure",
+            "error": f"生成 PDF 报告失败: {str(e)}"
+        }
+
+
 # ---------------------------------------------------------------------------
 # Tool registry & schema
 # ---------------------------------------------------------------------------
@@ -105,6 +206,7 @@ tool_registry = {
     "get_database_schema": get_database_schema,
     "execute_sql_query": execute_sql_query,
     "generate_chart": generate_chart,
+    "generate_pdf_report": generate_pdf_report,
 }
 
 tools = [
@@ -168,6 +270,31 @@ tools = [
                     }
                 },
                 "required": ["chart_type", "title", "data"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "generate_pdf_report",
+            "description": (
+                "根据报告素材和报告要求自动生成 PDF 报告。"
+                "工具会先调用 LLM 生成 HTML 报告，再转成 PDF 上传到 OSS，"
+                "最终在 file_attachment 中返回 PDF 链接。"
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "report_material": {
+                        "type": "string",
+                        "description": "报告素材原文，支持多段文本"
+                    },
+                    "report_requirement": {
+                        "type": "string",
+                        "description": "报告要求，如篇幅、结构、重点、语气等"
+                    }
+                },
+                "required": ["report_material", "report_requirement"]
             }
         }
     },
