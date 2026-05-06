@@ -2,6 +2,7 @@ import os
 import asyncio
 import sqlite3
 from dotenv import load_dotenv
+from agents.globals.context import add_pending_message
 
 load_dotenv()
 
@@ -71,6 +72,31 @@ async def execute_sql_query(sql: str) -> dict:
     return await asyncio.to_thread(_run)
 
 
+async def generate_chart(chart_type: str, title: str, data: dict) -> dict:
+    """
+    根据给定的数据和图表类型，生成要在前端渲染的图表结构。
+    前端接收到此返回后将直接进行图表渲染。
+    """
+    try:
+        chart_payload = {
+            "action": "render_chart",
+            "chart_type": chart_type,
+            "title": title,
+            "data": data
+        }
+
+        return {
+            "result": "success",
+            "file_attachment": chart_payload,
+            "message": "图表已生成并推送给前端渲染。"
+        }
+    except Exception as e:
+        return {
+            "result": "failure",
+            "error": f"生成图表时发生错误: {str(e)}"
+        }
+
+
 # ---------------------------------------------------------------------------
 # Tool registry & schema
 # ---------------------------------------------------------------------------
@@ -78,6 +104,7 @@ async def execute_sql_query(sql: str) -> dict:
 tool_registry = {
     "get_database_schema": get_database_schema,
     "execute_sql_query": execute_sql_query,
+    "generate_chart": generate_chart,
 }
 
 tools = [
@@ -110,6 +137,37 @@ tools = [
                     }
                 },
                 "required": ["sql"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "generate_chart",
+            "description": (
+                "将查询到的数据生成图表返回给前端渲染。支持柱状图(bar)、折线图(line)和饼状图(pie)。\n"
+                "传入的 data 结构必须严格符合以下示例：\n"
+                "- bar / line 图表示例: {\"labels\": [\"北京\", \"上海\"], \"datasets\": [{\"label\": \"2023年销售额\", \"data\": [100, 200]}, {\"label\": \"2024年销售额\", \"data\": [150, 250]}]}\n"
+                "- pie 图表示例: {\"labels\": [\"餐饮\", \"交通\"], \"values\": [30, 70]}"
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "chart_type": {
+                        "type": "string",
+                        "enum": ["bar", "line", "pie"],
+                        "description": "图表类型"
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "图表的标题"
+                    },
+                    "data": {
+                        "type": "object",
+                        "description": "图表的结构化数据，必须符合请求的图表类型的结构要求"
+                    }
+                },
+                "required": ["chart_type", "title", "data"]
             }
         }
     },
