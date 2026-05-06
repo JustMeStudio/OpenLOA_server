@@ -12,16 +12,6 @@ user_rate_limits:
     window_seconds: 60      # 时间窗口 = 1分钟
     note: "建议配合并发控制(Semaphore)使用，这里限制请求频率"
 
-  # ========== 中等消耗接口（充值/消耗） ==========
-  billing_operations:
-    enabled: true
-    description: "充值、消耗等付费操作"
-    endpoints:
-      - /billing/recharge
-      - /billing/consume
-    limit: 10               # 每个用户每分钟最多10次操作
-    window_seconds: 60
-
   # ========== 低消耗接口（查询、停止等） ==========
   query_operations:
     enabled: true
@@ -31,10 +21,6 @@ user_rate_limits:
       - /agent/query_conversations
       - /agent/query_messages_in_conversation
       - /agent/query_agent_info
-      - /billing/balance
-      - /billing/transactions
-      - /billing/packages
-      - /billing/calculate_custom_price
     limit: 50               # 每个用户每分钟最多50次查询
     window_seconds: 60
 
@@ -45,18 +31,8 @@ user_rate_limits:
     endpoints:
       - /account/update_password
       - /account/update_user_info
-      - /agent/create_edit_agent
     limit: 20
     window_seconds: 60
-
-  # ========== Agent推荐接口 ==========
-  agent_recommendation:
-    enabled: true
-    description: "推荐合适的Agent"
-    endpoints:
-      - /information/recommend_agents
-    limit: 5
-    window_seconds: 600
 
   # ========== 默认规则（其他认证接口） ==========
   default:
